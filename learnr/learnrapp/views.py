@@ -12,7 +12,9 @@ from django.core import serializers
 
 # Create your views here.
 def index(request):
-	return HttpResponse("TIME TO CHAT IT UP.")
+	return render(request, 'main_page.html')
+	#return HttpResponse("TIME TO CHAT IT UP.")
+
 
 def chat(request):
 	messages = Message.objects.all()
