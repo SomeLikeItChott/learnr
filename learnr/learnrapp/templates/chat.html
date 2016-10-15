@@ -1,0 +1,16 @@
+{% if messages %}
+    <ul>
+    {% for message in messages %}
+        <p>{{ message.sender }}: {{ message.text }}</p>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No messages.</p>
+{% endif %}
+
+send message
+<form action="{% url 'learnrapp:send_message' %}" method="post">
+<input type='text' name='sender'></input>
+<input type='text' name='text'></input>
+<input type='submit' value='Send'></input>
+</form>
