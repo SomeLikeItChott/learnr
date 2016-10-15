@@ -3,7 +3,8 @@ from django.http import HttpResponse
 
 # Create your views here.
 def index(request):
-	return HttpResponse("TIME TO CHAT IT UP.")
+	return render(request,'main_page.html')
+	# return HttpResponse("TIME TO CHAT IT UP.")
 
 def chat(request):
 	return render(request, 'chat.html')
