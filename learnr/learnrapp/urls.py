@@ -9,5 +9,8 @@ urlpatterns = [
 	url(r'login/', views.login, name='login'),
 	url(r'logout/', views.logout_view, name='logout'),
 	url(r'get_messages/', views.get_messages, name='get_messages'),
-	url(r'get_python_output/', views.get_python_output, name='get_python_output')
+	url(r'get_python_output/', views.get_python_output, name='get_python_output'),
+	url(r'user/(?P<username>\w{0,50})', views.user, name='user'),
+	url(r'am_i_watched/', views.am_i_watched, name='am_i_watched'),
+	url(r'get_user_code/', views.get_user_code, name='get_user_code'),
 ]

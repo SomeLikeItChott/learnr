@@ -27,31 +27,17 @@
 	});
 	myCodeMirror.setSize(myTextArea.width, "100%");
 
-	send_text = false;
-	window.setInterval(function(){
-	{% if user.is_authenticated %}
-		data= {'user_id': {{ request.user.id }}};
-	{% else %}
-		data= {'user_id': '-1'};
-	{% endif %}
-	if(send_text)
-		data['text'] = myCodeMirror.getValue();
-	else
-		data['text'] = '';
-
+window.setInterval(function(){
 	$.ajax({
-			url: '{% url 'learnrapp:am_i_watched' %}', 
+			url: '{% url 'learnrapp:get_user_code' %}', 
 			dataType: 'json',
 			method: 'POST',
-			data: data,
+			data: {'user_id': {{user_id}}},
 			complete: function(data, status){
-				if(data.responseText === 'True')
-					send_text = true;
-				else
-					send_text = false;
+				console.log(data.responseText);
+				myCodeMirror.setValue(data.responseText);
 			}
 		})
 }, 1000);
-
 
 </script>

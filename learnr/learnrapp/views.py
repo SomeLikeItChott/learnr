@@ -3,25 +3,54 @@ from django.http import HttpResponse, HttpResponseRedirect
 import json
 import datetime
 from django.views.decorators.csrf import csrf_exempt
-from learnrapp.models import Message
+from learnrapp.models import Message, PublicUser
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as auth_login
 from django.core import serializers
 from cStringIO import StringIO
 import sys
+from django.utils import timezone
 
+
+def user(request, username):
+	if User.objects.filter(username=username).exists():
+		context = {'user_id': User.objects.get(username=username).id, 'username': username}
+		return render(request, 'user.html', context)
+	else:
+		return render(request, 'main_page.html')
+
+@csrf_exempt 
+def am_i_watched(request):
+	user_id = request.POST.get('user_id')
+	if PublicUser.objects.filter(user_id=user_id).exists():
+		public_user = PublicUser.objects.get(user_id=user_id)
+		if(request.POST.get('text') != ''):
+			public_user.text = request.POST.get('text')
+			public_user.save()
+		last_time = public_user.last_watched
+		if timezone.now() - last_time < datetime.timedelta(seconds=5):
+			return HttpResponse('True')
+	else:
+		new_public = PublicUser(user=request.user, last_watched=timezone.now())
+		new_public.save()
+	return HttpResponse('False')
+
+@csrf_exempt
+def get_user_code(request):
+	user_id = request.POST.get('user_id')
+	print user_id
+	if PublicUser.objects.filter(user_id=user_id).exists():
+		public_user = PublicUser.objects.get(user_id=user_id)
+		public_user.last_watched = timezone.now()
+		public_user.save()
+		return HttpResponse(public_user.text)
+	return HttpResponse('False')
 
 # Create your views here.
 def index(request):
 	return render(request, 'main_page.html')
 	#return HttpResponse("TIME TO CHAT IT UP.")
-
-
-def chat(request):
-	messages = Message.objects.all()
-	context = {'messages' : messages}
-	return render(request, 'chat.html', context)
 
 @csrf_exempt 
 def get_messages(request):
@@ -63,7 +92,7 @@ def send_message(request):
 		if POST.has_key(u'text'):
 			results = {'heck':'here'}
 			text = POST[u'text']
-			message = Message(sender=request.user, text=text, time=datetime.datetime.now())
+			message = Message(sender=request.user, text=text, time=timezone.now())
 			message.save();
 	json_results = json.dumps(results)
 	return HttpResponse(json_results)
@@ -92,5 +121,5 @@ def login(request):
 		return render(request, 'login.html')
 
 def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect('/')
+	logout(request)
+	return HttpResponseRedirect('/')

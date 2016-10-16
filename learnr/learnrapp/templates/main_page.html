@@ -10,18 +10,24 @@
                 <div class="col-md-8" style="height:100%">
                     <div class="col-md-12" style="height:100%;">
                         <div class="row" style="height:95%">
+                            {% block code_editor %}
                             {% include "code_editor.html" %}
+                            {% endblock %}
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4" style="height:100%">
                     <div class="alert alert-danger" style="height:100%">
+                        {% block problem_pane %}
                         {% include "problem_pane.html" %}
+                        {% endblock %}
                     </div>
                 </div>
             </div>
+            {% block run_my_code %}
             <div class="row" style="height:5%">
                 <div class="col-md-12" style="height:100%;">
+
                     <div>
                         <button id="interpret_button">Run my code</button>
                     </div>
@@ -42,13 +48,16 @@
                     </script>
                 </div>
             </div>
+            {% endblock %}
             <div class="row" style="height:20%">
                 <div class="col-md-12" style="height:100%;">
                     <textarea readonly id="output_console" style="height:100%;width:100%;"></textarea>
                 </div>
             </div>
         </div>
+        {% block chat %}
         {% include 'chat.html' %}
+        {% endblock %}
     </div>
 </div>
 

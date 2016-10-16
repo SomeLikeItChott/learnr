@@ -93,7 +93,6 @@ $( "#message_form" ).submit(function( event ) {
 	$('.chatfield').val('');
 });
 latest_message = 0;
-
 $( document ).ready(function(){
 	$.ajax({
 		url: '{% url 'learnrapp:get_messages' %}', 
