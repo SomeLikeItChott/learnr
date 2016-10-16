@@ -1,16 +1,76 @@
+<div class="message_box">
 {% if messages %}
-    <ul>
-    {% for message in messages %}
-        <p>{{ message.sender }}: {{ message.text }}</p>
-    {% endfor %}
-    </ul>
+	<ul class="message_list">
+		<li><em>You have joined the chat room</em></li>
+	</ul>
 {% else %}
-    <p>No messages.</p>
+	<p>No messages.</p>
 {% endif %}
+</div>
 
 send message
-<form action="{% url 'learnrapp:send_message' %}" method="post">
-<input type='text' name='sender'></input>
-<input type='text' name='text'></input>
-<input type='submit' value='Send'></input>
+<form id="message_form">
+	{% csrf_token %}
+	<input class="required chatfield" type='text' name='text'></input>
+	<input id='sendbutton' type='submit' value='Send'></input>
 </form>
+
+<script
+			  src="http://code.jquery.com/jquery-3.1.1.min.js"
+			  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+			  crossorigin="anonymous"></script>
+
+<script>
+
+
+$( "#message_form" ).submit(function( event ) {
+	event.preventDefault();
+	if ( $( ".required" ).val().length === 0 ) {
+		alert('no');
+	} else {
+		var msg = $( "#message_form" ).serialize();
+		$.ajax({
+			url: '{% url 'learnrapp:send_message' %}', 
+			method: 'POST',
+			data: msg
+		})
+	}
+	$('.chatfield').val('');
+});
+latest_message = 0;
+
+$( document ).ready(function(){
+	$.ajax({
+		url: '{% url 'learnrapp:get_messages' %}', 
+		dataType: 'json',
+		method: 'POST',
+		data: {'latest_message': '-1'},
+		success: function(data, status){
+			var messages = $.map(data, function(el) { return el });
+			for (var i = messages.length - 1; i >= 0; i--) {
+				if(parseInt(messages[i]['id']) > latest_message){
+					latest_message = parseInt(messages[i]['id']);
+					$('.message_list').append('<li>' + messages[i]['name'] + ': ' + messages[i]['text'] + '</li>');
+				}
+			}
+		}
+	})
+});
+window.setInterval(function(){
+	$.ajax({
+			url: '{% url 'learnrapp:get_messages' %}', 
+			dataType: 'json',
+			method: 'POST',
+			data: {'latest_message': latest_message},
+			success: function(data, status){
+				var messages = $.map(data, function(el) { return el });
+				for (var i = messages.length - 1; i >= 0; i--) {
+					if(parseInt(messages[i]['id']) > latest_message){
+						latest_message = parseInt(messages[i]['id']);
+						$('.message_list').append('<li>' + messages[i]['name'] + ': ' + messages[i]['text'] + '</li>');
+					}
+				}
+			}
+		})
+}, 1000);
+</script>
