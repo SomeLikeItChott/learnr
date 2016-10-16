@@ -1,56 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-    <style>
-        html, body {height: 100%;}
+{% extends "base.html" %}
 
-        #content, .container-fluid, .span9
-        {
-            border: 1px solid #000;
-            overflow-y:auto;
-            height:100%;
-        }​
-    </style>
-
-    <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
-
-    <head>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-        <title>LEARNr</title>
-
-    </head>
-
-    <body>
-
-        <div class="container-fluid">
-            <div class="row">
-                {% include "nav_bar.html" %}
+{% block content %}
+<div class="container-fluid">
+    <!-- Main window -->
+    <div class="row" style="height: 90%">
+        <!-- editor window, problem statement, and output window column -->
+        <div class="col-md-10" style="height:100%">
+            <div class="row" style="height:75%">
+                <div class="col-md-8" style="height:100%">
+                    {% include "code_editor.html" %}
+                </div>
+                <div class="col-md-4" style="height:100%">
+                    <div class="alert alert-danger" style="height:100%">
+                        <h1>PROBLEM STATEMENT</h1>
+                    </div>
+                </div>
             </div>
-            <!-- Main window -->
-            <div class="row" style="height: 90%">
-                <!-- editor window, problem statement, and output window column -->
-                <div class="col-md-10" style="height:100%">
-                    <div class="row" style="height:75%">
-                        <div class="col-md-8" style="height:100%">
-                            {% include "code_editor.html" %}
-                        </div>
-                        <div class="col-md-4" style="height:100%">
-                            <div class="alert alert-danger" style="height:100%">
-                                <h1>PROBLEM STATEMENT</h1>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" style="height:25%">
-                        <textarea readonly id="output_console" style="height:100%;width:100%;"></textarea>
-                    </div>
-                </div>
-                <div class="col-md-2" style="height:100%">
-                    <div class="alert alert-info" style="height:100%">
-                        <h1>TWITCH CHAT</h1>
-                    </div>
-                </div>
+            <div class="row" style="height:25%">
+                <textarea readonly id="output_console" style="height:100%;width:100%;"></textarea>
             </div>
         </div>
-    </body>
-</html>
+        <div class="col-md-2" style="height:100%">
+            <div class="alert alert-info" style="height:100%">
+                <h1>CHAT</h1>
+                {% include 'chat.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
