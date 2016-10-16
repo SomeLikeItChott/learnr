@@ -1,69 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-    <style>
-        html, body {height: 100%;}
+	<style>
+		html, body {height: 100%;}
 
-        #content, .container-fluid, .span9
-        {
-            border: 1px solid #000;
-            overflow-y:auto;
-            height:100%;
-        }​
-    </style>
+		#content, .container-fluid, .span9
+		{
+			border: 1px solid #000;
+			overflow-y:auto;
+			height:100%;
+		}​
+	</style>
+	<script
+	  src="http://code.jquery.com/jquery-3.1.1.min.js"
+	  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+	  crossorigin="anonymous"></script>
 
-    <head>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-        <title>LEARNr</title>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+		<title>LEARNr</title>
+	</head>
 
-    </head>
+	<body>
 
-    <body>
-
-        <div class="container-fluid">
-            <div class="row">
-                {% include "nav_bar.html" %}
-            </div>
-            <!-- Main window -->
-            <div class="row" style="height: 95%">
-                <!-- editor window, problem statement, and output window column -->
-                <div class="col-md-10" style="height:100%">
-                    <div class="row" style="height:75%">
-                        <div class="col-md-8" style="height:100%">
+		<div class="container-fluid">
+			<div class="row">
+				{% include "nav_bar.html" %}
+			</div>
+			<!-- Main window -->
+			<div class="row" style="height: 95%">
+				<!-- editor window, problem statement, and output window column -->
+				<div class="col-md-10" style="height:100%">
+					<div class="row" style="height:75%">
+						<div class="col-md-8" style="height:100%">
 {#                            <div class="alert alert-success" style="height:100%">#}
 {#                                <h1><code>EDITOR WINDOW</code></h1>#}
 {#                            </div>#}
 {#                            <textarea rows=auto width=auto; id="test_text"></textarea>#}
-                            <script src="lib/codemirror.js"></script>
-                            <link rel="stylesheet" href="lib/codemirror.css">
-                            <script src="mode/javascript/javascript.js"></script>
+							<script src="lib/codemirror.js"></script>
+							<link rel="stylesheet" href="lib/codemirror.css">
+							<script src="mode/javascript/javascript.js"></script>
+							<textarea id="code_editor">
 
-                            <script>
-                                var myCodeMirror = CodeMirror.fromTextArea(document.createElement("TEXTAREA"));
-                            </script>
+							</textarea>
+							<button id="interpret_button">Run my code</button>
 
 
-                        </div>
-                        <div class="col-md-4" style="height:100%">
-                            <div class="alert alert-danger" style="height:100%">
-                                <h1>PROBLEM STATEMENT</h1>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" style="height:25%">
-                        <div class="alert alert-warning" style="height:100%">
-                            <h1>EDITOR OUTPUT WINDOW</h1>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2" style="height:100%">
-                    <div class="alert alert-info" style="height:100%">
-                        <h1>TWITCH CHAT</h1>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </body>
+						</div>
+						<div class="col-md-4" style="height:100%">
+							<div class="alert alert-danger" style="height:100%">
+								<h1>PROBLEM STATEMENT</h1>
+							</div>
+						</div>
+					</div>
+					<div class="row" style="height:25%">
+						<div class="alert alert-warning" style="height:100%">
+							<h1>EDITOR OUTPUT WINDOW</h1>
+							<textarea id="output_console"></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-2" style="height:100%">
+					<div class="alert alert-info" style="height:100%">
+						<h1>CHAT</h1>
+						{% include "chat.html" %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>
+
+<script>
+	$('#interpret_button').click(function(){
+		code = $('#code_editor').val();
+		$.ajax({
+			url: '{% url 'learnrapp:get_python_output' %}', 
+			method: 'POST',
+			data: { 'code': code },
+			success: function(data, status){
+				$('#output_console').val(data);
+			}
+		});
+	});
+</script>
 

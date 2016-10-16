@@ -1,3 +1,4 @@
+<a href="{% url 'learnrapp:register' %}">Register</a>
 <form id="message_form" url="{% url 'learnrapp:login' %}"  method="POST">
 	{% csrf_token %}
 	Username: <input type='text' name='username'></input>

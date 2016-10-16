@@ -1,24 +1,15 @@
 <div class="message_box">
-{% if messages %}
 	<ul class="message_list">
 		<li><em>You have joined the chat room</em></li>
 	</ul>
-{% else %}
-	<p>No messages.</p>
-{% endif %}
+	send message
+	<form id="message_form">
+		{% csrf_token %}
+		<input class="required chatfield" type='text' name='text'></input>
+		<input id='sendbutton' type='submit' value='Send'></input>
+	</form>
 </div>
 
-send message
-<form id="message_form">
-	{% csrf_token %}
-	<input class="required chatfield" type='text' name='text'></input>
-	<input id='sendbutton' type='submit' value='Send'></input>
-</form>
-
-<script
-			  src="http://code.jquery.com/jquery-3.1.1.min.js"
-			  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-			  crossorigin="anonymous"></script>
 
 <script>
 

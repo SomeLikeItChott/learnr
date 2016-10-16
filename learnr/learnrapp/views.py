@@ -5,9 +5,11 @@ import datetime
 from django.views.decorators.csrf import csrf_exempt
 from learnrapp.models import Message
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate 
+from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as auth_login
 from django.core import serializers
+from cStringIO import StringIO
+import sys
 
 
 # Create your views here.
@@ -36,6 +38,19 @@ def get_messages(request):
 		new_messages = {'status': 'no'}
 	json_messages = json.dumps(list(new_messages))
 	return HttpResponse(json_messages)
+
+@csrf_exempt 
+def get_python_output(request):
+	code = request.POST.get('code')
+	old_stdout = sys.stdout
+	redirected_output = sys.stdout = StringIO()
+	try:
+		exec(code)
+	except Exception as e:
+		print str(e)
+	sys.stdout = old_stdout
+	json_output = json.dumps(redirected_output.getvalue())
+	return HttpResponse(redirected_output.getvalue())
 
 @csrf_exempt      
 def send_message(request):
@@ -74,3 +89,7 @@ def login(request):
 			return HttpResponseRedirect('/')
 	else:
 		return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/')
