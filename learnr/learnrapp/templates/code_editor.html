@@ -1,0 +1,26 @@
+{% load static %}
+
+<script src="{% static "cm/lib/codemirror.js" %}"></script>
+<link rel="stylesheet" href="{% static "cm/lib/codemirror.css" %}">
+<script src="{% static "cm/mode/python/python.js" %}"></script>
+
+<textarea style="width:100%; height:100%;" id="test_text"></textarea>
+
+<style>
+    #CodeMirror
+    {
+        border: 1px solid #000;
+        height:100%;
+    }
+</style>
+
+
+<script>
+    var myTextArea = document.getElementById("test_text");
+    var myCodeMirror = CodeMirror.fromTextArea(myTextArea, {
+        lineNumbers:true,
+        mode:"python",
+        lineWrapping:true
+    });
+    myCodeMirror.setSize(myTextArea.width, "100%");
+</script>
