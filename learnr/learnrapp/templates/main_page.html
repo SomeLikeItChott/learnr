@@ -11,6 +11,8 @@
         }​
     </style>
 
+    <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
     <head>
         <meta charset="UTF-8">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -36,11 +38,12 @@
                         <div class="col-md-4" style="height:100%">
                             <div class="alert alert-danger" style="height:100%">
                                 <h1>PROBLEM STATEMENT</h1>
+                                <button id="interpret_button">Run my code</button>
                             </div>
                         </div>
                     </div>
                     <div class="row" style="height:25%">
-                        <textarea readonly id="editor_output" style="height:100%;width:100%;"></textarea>
+                        <textarea readonly id="output_console" style="height:100%;width:100%;"></textarea>
                     </div>
                 </div>
                 <div class="col-md-2" style="height:100%">
@@ -53,3 +56,16 @@
     </body>
 </html>
 
+<script>
+	$('#interpret_button').click(function(){
+		code = $('#test_text').val();
+		$.ajax({
+			url: '{% url 'learnrapp:get_python_output' %}', 
+			method: 'POST',
+			data: { 'code': code },
+			success: function(data, status){
+				$('#output_console').val(data);
+			}
+		});
+	});
+</script>
