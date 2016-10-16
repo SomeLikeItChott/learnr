@@ -18,5 +18,5 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^', include('learnrapp.urls', namespace='learnrapp')),
-    url(r'^admin/', admin.site.urls),
+    url(r'^administer/', admin.site.urls),
 ]
