@@ -8,7 +8,11 @@
         <div class="col-md-10" style="height:100%">
             <div class="row" style="height:75%">
                 <div class="col-md-8" style="height:100%">
-                    {% include "code_editor.html" %}
+                    <div class="col-md-12" style="height:100%;">
+                        <div class="row" style="height:95%">
+                            {% include "code_editor.html" %}
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-4" style="height:100%">
                     <div class="alert alert-danger" style="height:100%">
@@ -16,8 +20,32 @@
                     </div>
                 </div>
             </div>
-            <div class="row" style="height:25%">
-                <textarea readonly id="output_console" style="height:100%;width:100%;"></textarea>
+            <div class="row" style="height:5%">
+                <div class="col-md-12" style="height:100%;">
+                    <div>
+                        <button id="interpret_button">Run my code</button>
+                    </div>
+                    <script>
+                        $('#interpret_button').click(function(){
+                            code = myCodeMirror.getValue();
+                            console.log(code);
+                            console.log($('#test_text'));
+                            $.ajax({
+                                url: '{% url 'learnrapp:get_python_output' %}',
+                                method: 'POST',
+                                data: { 'code': code },
+                                success: function(data, status){
+                                    $('#output_console').val(data);
+                                }
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+            <div class="row" style="height:20%">
+                <div class="col-md-12" style="height:100%;">
+                    <textarea readonly id="output_console" style="height:100%;width:100%;"></textarea>
+                </div>
             </div>
         </div>
         <div class="col-md-2" style="height:100%">
@@ -29,20 +57,6 @@
     </div>
 </div>
 
-<script>
-    $('#interpret_button').click(function(){
-        code = myCodeMirror.getValue();
-        console.log(code);
-        console.log($('#test_text'));
-        $.ajax({
-            url: '{% url 'learnrapp:get_python_output' %}',
-            method: 'POST',
-            data: { 'code': code },
-            success: function(data, status){
-                $('#output_console').val(data);
-            }
-        });
-    });
-</script>
+
 
 {% endblock %}
