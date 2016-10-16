@@ -5,7 +5,6 @@
 
         #content, .container-fluid, .span9
         {
-            border: 1px solid #000;
             overflow-y:auto;
             height:100%;
         }​
@@ -41,8 +40,27 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row" style="height:25%">
-                        <textarea readonly id="output_console" style="height:100%;width:100%;"></textarea>
+                    <div class="row" style="height:5%;">
+                        <script>
+                            $('#interpret_button').click(function(){
+                                code = myCodeMirror.getValue();
+                                console.log(code);
+                                console.log($('#test_text'));
+                                $.ajax({
+                                    url: '{% url 'learnrapp:get_python_output' %}',
+                                    method: 'POST',
+                                    data: { 'code': code },
+                                    success: function(data, status){
+                                        $('#output_console').val(data);
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+                    <div class="row" style="height:20%">
+                        <div class="col-md-12" style="height:100%;">
+                            <textarea readonly id="output_console" style="height:100%;width:100%;"></textarea>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-2" style="height:100%">
