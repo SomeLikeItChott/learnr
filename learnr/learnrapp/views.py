@@ -42,6 +42,7 @@ def get_messages(request):
 @csrf_exempt 
 def get_python_output(request):
 	code = request.POST.get('code')
+	print code
 	old_stdout = sys.stdout
 	redirected_output = sys.stdout = StringIO()
 	try:
