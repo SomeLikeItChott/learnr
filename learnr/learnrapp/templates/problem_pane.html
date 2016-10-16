@@ -1,14 +1,51 @@
-<div class="dropdown" >
-  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="width:90%;" id="problem_dropdown">Dropdown Example</button>
-  <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width:5%;">
-    <span class="sr-only">Toggle Dropdown</span>
-  </button>
-  <ul class="dropdown-menu" style="width:100%;">
-    <li id="1"><a href="#">HTML</a></li>
-    <li id="2"><a href="#">CSS</a></li>
-    <li id="3"><a href="#">JavaScript</a></li>
-  </ul>
-
-
-
+<div class="row">
+    <div class="col-md-12">
+        <div class="dropdown" style="width:100%;">
+            <select class="btn btn-primary dropdown-toggle" style="width:100%;" id="select">
+                <option value="1">Problem 1</option>
+                <option value="2">Problem 2</option>
+                <option value="3">Problem 3</option>
+            </select>
+        </div>
+    </div>
 </div>
+
+<div class="row">
+    <div class="col-md-12" id="loaded_content">
+
+    </div>
+</div>
+
+<script>
+    $('#select').change(function(){
+        $.ajax({
+            url: '{% url 'learnrapp:get_problem' %}',
+            method: 'POST',
+            data: { 'problem_number': function() {
+                var select = document.getElementById("select");
+                return select.options[select.selectedIndex].value;
+            } },
+            success: function(data, status) {
+                console.log(data);
+{#                var problem_data = $.map(data, function(el) { return el });#}
+                $('#loaded_content').html("<h3>" + data + "</h3>")
+            }
+        });
+    });
+
+    $( document ).ready(function(){
+        $.ajax({
+            url: '{% url 'learnrapp:get_problem' %}',
+            method: 'POST',
+            data: { 'problem_number': function() {
+                var select = document.getElementById("select");
+                return select.options[select.selectedIndex].value;
+            } },
+            success: function(data, status) {
+                console.log(data);
+{#                var problem_data = $.map(data, function(el) { return el });#}
+                $('#loaded_content').html("<h3>" + data + "</h3>")
+            }
+        });
+    });
+</script>
