@@ -18,8 +18,11 @@
     </head>
 
 
-    </body>
-    {% include "nav_bar.html" %}
-    {% block content %}{% endblock %}
+    <body>
+        <div class="container-fluid" style="height: 100%">
+
+            {% include "nav_bar.html" %}
+            {% block content %}{% endblock %}
+        </div>
     </body>
 </html>
