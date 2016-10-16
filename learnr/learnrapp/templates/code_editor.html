@@ -4,6 +4,8 @@
 <link rel="stylesheet" href="{% static "cm/lib/codemirror.css" %}">
 <script src="{% static "cm/mode/python/python.js" %}"></script>
 
+<link rel="stylesheet" href="{% static "css/dracula.css" %}">
+
 <textarea style="width:100%; height:100%;" id="test_text"></textarea>
 
 <style>
@@ -12,6 +14,8 @@
         border: 1px solid #000;
         height:100%;
     }
+
+
 </style>
 
 
@@ -20,7 +24,8 @@
     var myCodeMirror = CodeMirror.fromTextArea(myTextArea, {
         lineNumbers:true,
         mode:"python",
-        lineWrapping:true
+        lineWrapping:true,
+        theme:"dracula"
     });
     myCodeMirror.setSize(myTextArea.width, "100%");
 </script>
