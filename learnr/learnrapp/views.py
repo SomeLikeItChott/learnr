@@ -3,19 +3,56 @@ from django.http import HttpResponse, HttpResponseRedirect
 import json
 import datetime
 from django.views.decorators.csrf import csrf_exempt
-from models import Message, Problem
+from models import Message, Problem, PublicUser
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as auth_login
 from django.core import serializers
 from cStringIO import StringIO
 import sys
+from django.utils import timezone
 
+
+def user(request, username):
+	if User.objects.filter(username=username).exists():
+		context = {'user_id': User.objects.get(username=username).id, 'username': username}
+		return render(request, 'user.html', context)
+	else:
+		return render(request, 'main_page.html')
+
+@csrf_exempt 
+def am_i_watched(request):
+	user_id = request.POST.get('user_id')
+	if PublicUser.objects.filter(user_id=user_id).exists():
+		public_user = PublicUser.objects.get(user_id=user_id)
+		if(request.POST.get('text') != ''):
+			public_user.text = request.POST.get('text')
+			public_user.save()
+		last_time = public_user.last_watched
+		if timezone.now() - last_time < datetime.timedelta(seconds=5):
+			return HttpResponse('True')
+	else:
+		new_public = PublicUser(user=request.user, last_watched=timezone.now())
+		new_public.save()
+	return HttpResponse('False')
+
+@csrf_exempt
+def get_user_code(request):
+	user_id = request.POST.get('user_id')
+	print user_id
+	if PublicUser.objects.filter(user_id=user_id).exists():
+		public_user = PublicUser.objects.get(user_id=user_id)
+		public_user.last_watched = timezone.now()
+		public_user.save()
+		return HttpResponse(public_user.text)
+	return HttpResponse('False')
 
 # Create your views here.
 def index(request):
-	return render(request, 'main_page.html')
-
+	if(request.user.is_authenticated):
+		return render(request, 'main_page.html')
+	else:
+		return render(request, 'main_page.html')
 
 def chat(request):
 	messages = Message.objects.all()

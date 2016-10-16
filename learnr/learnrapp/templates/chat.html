@@ -110,7 +110,7 @@ $( document ).ready(function(){
 							if('{{ user.username }}' == messages[i]['name'])
 								classes = 'you'
 						{% endif %}
-						string = '<div class="bubble ' + classes + '"><strong>' + messages[i]['name'] + ':</strong> ' + messages[i]['text'] + '</div>'
+						string = '<div class="bubble ' + classes + '"><a href="/user/' + messages[i]['name'] + '"><strong>' + messages[i]['name'] + ':</strong></a> ' + messages[i]['text'] + '</div>'
 						$('.message_list').append(string);
 				}
 			}
@@ -133,7 +133,7 @@ window.setInterval(function(){
 							if('{{ user.username }}' == messages[i]['name'])
 								classes = 'you'
 						{% endif %}
-						string = '<div class="bubble ' + classes + '"><strong>' + messages[i]['name'] + ':</strong> ' + messages[i]['text'] + '</div>'
+						string = '<div class="bubble ' + classes + '"><a href="/user/' + messages[i]['name'] + '"><strong>' + messages[i]['name'] + ':</strong></a> ' + messages[i]['text'] + '</div>'
 						$('.message_list').append(string);
 					}
 				}
