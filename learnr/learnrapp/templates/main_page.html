@@ -38,7 +38,6 @@
                         <div class="col-md-4" style="height:100%">
                             <div class="alert alert-danger" style="height:100%">
                                 <h1>PROBLEM STATEMENT</h1>
-                                <button id="interpret_button">Run my code</button>
                             </div>
                         </div>
                     </div>
@@ -55,17 +54,3 @@
         </div>
     </body>
 </html>
-
-<script>
-	$('#interpret_button').click(function(){
-		code = $('#test_text').val();
-		$.ajax({
-			url: '{% url 'learnrapp:get_python_output' %}', 
-			method: 'POST',
-			data: { 'code': code },
-			success: function(data, status){
-				$('#output_console').val(data);
-			}
-		});
-	});
-</script>
