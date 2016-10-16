@@ -1,17 +1,95 @@
+<style>
+.chat {
+	width: 400px;
+}
+
+.bubble{
+	background-color: #F2F2F2;
+	border-radius: 5px;
+	display: inline-block;
+	padding: 10px 18px;
+	position: relative;
+	vertical-align: top;
+}
+.no-arrow-bubble{
+	background-color: #F2F2F2;
+	border-radius: 5px;
+	display: inline-block;
+	padding: 10px 18px;
+	position: relative;
+	vertical-align: top;
+}
+
+.bubble::before {
+	background-color: #F2F2F2;
+	content: "\00a0";
+	display: block;
+	height: 16px;
+	position: absolute;
+	top: 11px;
+	transform:             rotate( 29deg ) skew( -35deg );
+		-moz-transform:    rotate( 29deg ) skew( -35deg );
+		-ms-transform:     rotate( 29deg ) skew( -35deg );
+		-o-transform:      rotate( 29deg ) skew( -35deg );
+		-webkit-transform: rotate( 29deg ) skew( -35deg );
+	width:  20px;
+}
+
+.me {
+	float: left;   
+	margin: 5px 45px 5px 20px;         
+}
+
+.me::before {
+	left: -9px;           
+}
+
+.you {
+	float: right;    
+	margin: 5px 20px 5px 45px;         
+}
+
+.you::before {
+	right: -9px;    
+}
+</style>
+
+<div class="col-md-2" style="height:100%">
+	<div class="message_box" style="height:95%;">
+		<div class="row" style="height:90%; overflow: scroll;">
+			<div class="message_list">
+				<div class="no-arrow-bubble"><em>You have joined the chat room</em></div>
+			</div>
+		</div>
+		<div class="row" style="height:10%;">
+			<form id="message_form">
+				{% csrf_token %}
+
+				<div class="input-group">
+					<input type="text" name="text" class="form-control chatfield" placeholder="Your message">
+					<span class="input-group-btn">
+						<input class="btn btn-secondary" type="submit" value="Send"></input>
+					</span>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
 <script>
 
 $( "#message_form" ).submit(function( event ) {
 	event.preventDefault();
-	if ( $( ".required" ).val().length === 0 ) {
-		alert('no');
-	} else {
+	{% if user.is_authenticated %}
 		var msg = $( "#message_form" ).serialize();
 		$.ajax({
 			url: '{% url 'learnrapp:send_message' %}', 
 			method: 'POST',
 			data: msg
 		})
-	}
+	{% else %}
+		alert('You must be logged in to chat!')
+	{% endif %}
 	$('.chatfield').val('');
 });
 latest_message = 0;
@@ -27,7 +105,13 @@ $( document ).ready(function(){
 			for (var i = messages.length - 1; i >= 0; i--) {
 				if(parseInt(messages[i]['id']) > latest_message){
 					latest_message = parseInt(messages[i]['id']);
-					$('.message_list').append('<li>' + messages[i]['name'] + ': ' + messages[i]['text'] + '</li>');
+						classes = 'me'
+						{% if user.is_authenticated %}
+							if('{{ user.username }}' == messages[i]['name'])
+								classes = 'you'
+						{% endif %}
+						string = '<div class="bubble ' + classes + '"><strong>' + messages[i]['name'] + ':</strong> ' + messages[i]['text'] + '</div>'
+						$('.message_list').append(string);
 				}
 			}
 		}
@@ -44,30 +128,16 @@ window.setInterval(function(){
 				for (var i = messages.length - 1; i >= 0; i--) {
 					if(parseInt(messages[i]['id']) > latest_message){
 						latest_message = parseInt(messages[i]['id']);
-						$('.message_list').append('<li>' + messages[i]['name'] + ': ' + messages[i]['text'] + '</li>');
+						classes = 'me'
+						{% if user.is_authenticated %}
+							if('{{ user.username }}' == messages[i]['name'])
+								classes = 'you'
+						{% endif %}
+						string = '<div class="bubble ' + classes + '"><strong>' + messages[i]['name'] + ':</strong> ' + messages[i]['text'] + '</div>'
+						$('.message_list').append(string);
 					}
 				}
 			}
 		})
 }, 1000);
 </script>
-
-<div class="message_box" style="height:95%;">
-    <div class="row" style="height:90%;">
-	    <ul class="message_list">
-		    <li><em>You have joined the chat room</em></li>
-	    </ul>
-    </div>
-	Send Message
-    <div class="row" style="height:10%;">
-        <form id="message_form">
-            {% csrf_token %}
-            <div class="col-sm-8">
-                <input class="required chatfield" type='text' name='text' style="color:black"></input>
-            </div>
-            <div class="col-sm-4">
-                <input id='sendbutton' type='submit' value='Send' style="color:black"></input>
-            </div>
-        </form>
-    </div>
-</div>
