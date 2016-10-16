@@ -10,3 +10,9 @@ class Message(models.Model):
 
 	def user(self):
 		return User.objects.get(pk=self.user_id)
+
+
+class Problem(models.Model):
+	author = models.ForeignKey(User)
+	problem_text = models.CharField(max_length=600)
+	category = models.CharField(max_length=30)

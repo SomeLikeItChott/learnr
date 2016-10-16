@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 import json
 import datetime
 from django.views.decorators.csrf import csrf_exempt
-from learnrapp.models import Message
+from models import Message, Problem
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as auth_login
@@ -15,7 +15,6 @@ import sys
 # Create your views here.
 def index(request):
 	return render(request, 'main_page.html')
-	#return HttpResponse("TIME TO CHAT IT UP.")
 
 
 def chat(request):
@@ -94,3 +93,11 @@ def login(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+
+@csrf_exempt
+def get_problem(request):
+	problem_number = request.POST.get('problem_number')
+	problem_data = Problem.objects.get(pk=problem_number)
+	print problem_data.problem_text
+	return HttpResponse(problem_data.problem_text)
