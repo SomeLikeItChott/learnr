@@ -1,48 +1,75 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+        html, body {height: 100%;}
 
-{% block content %}
-<div class="container-fluid">
-    <!-- Main window -->
-    <div class="row" style="height: 90%">
-        <!-- editor window, problem statement, and output window column -->
-        <div class="col-md-10" style="height:100%">
-            <div class="row" style="height:75%">
-                <div class="col-md-8" style="height:100%">
-                    {% include "code_editor.html" %}
+        #content, .container-fluid, .span9
+        {
+            overflow-y:auto;
+            height:100%;
+        }​
+    </style>
+
+    <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <title>LEARNr</title>
+
+    </head>
+
+    <body>
+
+        <div class="container-fluid">
+            <div class="row">
+                {% include "nav_bar.html" %}
+            </div>
+            <!-- Main window -->
+            <div class="row" style="height: 90%">
+                <!-- editor window, problem statement, and output window column -->
+                <div class="col-md-10" style="height:100%">
+                    <div class="row" style="height:75%">
+                        <div class="col-md-8" style="height:100%">
+                            {% include "code_editor.html" %}
+                        </div>
+                        <div class="col-md-4" style="height:100%">
+                            <div class="alert alert-danger" style="height:100%">
+                                <h1>PROBLEM STATEMENT</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="height:5%;">
+                        <script>
+                            $('#interpret_button').click(function(){
+                                code = myCodeMirror.getValue();
+                                console.log(code);
+                                console.log($('#test_text'));
+                                $.ajax({
+                                    url: '{% url 'learnrapp:get_python_output' %}',
+                                    method: 'POST',
+                                    data: { 'code': code },
+                                    success: function(data, status){
+                                        $('#output_console').val(data);
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+                    <div class="row" style="height:20%">
+                        <div class="col-md-12" style="height:100%;">
+                            <textarea readonly id="output_console" style="height:100%;width:100%;"></textarea>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-4" style="height:100%">
-                    <div class="alert alert-danger" style="height:100%">
-                        <h1>PROBLEM STATEMENT</h1>
+                <div class="col-md-2" style="height:100%">
+                    <div class="alert alert-info" style="height:100%">
+                        <h1>CHAT</h1>
+                        {% include 'chat.html' %}
                     </div>
                 </div>
             </div>
-            <div class="row" style="height:25%">
-                <textarea readonly id="output_console" style="height:100%;width:100%;"></textarea>
-            </div>
         </div>
-        <div class="col-md-2" style="height:100%">
-            <div class="alert alert-info" style="height:100%">
-                <h1>CHAT</h1>
-                {% include 'chat.html' %}
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    $('#interpret_button').click(function(){
-        code = myCodeMirror.getValue();
-        console.log(code);
-        console.log($('#test_text'));
-        $.ajax({
-            url: '{% url 'learnrapp:get_python_output' %}',
-            method: 'POST',
-            data: { 'code': code },
-            success: function(data, status){
-                $('#output_console').val(data);
-            }
-        });
-    });
-</script>
-
-{% endblock %}
+    </body>
+</html>
